@@ -1,0 +1,33 @@
+pluginManagement {
+    // Cargar el SDK de Flutter desde local.properties
+    def flutterSdkPath = {
+        def properties = new Properties()
+        file("local.properties").withInputStream { properties.load(it) }
+        def flutterSdkPath = properties.getProperty("flutter.sdk")
+        assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+        return flutterSdkPath
+    }
+    settings.ext.flutterSdkPath = flutterSdkPath()
+
+    // Incluir el build de flutter_tools desde el SDK de Flutter
+    includeBuild("${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle")
+
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    // Usar la versión más reciente del plugin de Flutter
+    plugins {
+        id "dev.flutter.flutter-gradle-plugin" version "1.0.1" apply false
+    }
+}
+
+// Configuración del plugin de Flutter para el proyecto
+plugins {
+    id "com.android.application" version "7.3.0" apply false
+    id "dev.flutter.flutter-gradle-plugin" version "1.0.1" apply false
+}
+
+include ":app"
